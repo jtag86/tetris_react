@@ -26,3 +26,9 @@ export interface ITetromino {
   matrix: number[][],
   pos: IPos
 }
+
+export interface IRemovedRows {
+  row: number,
+  cells: number,
+  handling: boolean,
+}

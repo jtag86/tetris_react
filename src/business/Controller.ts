@@ -1,9 +1,9 @@
-import { IBoard, IField, ITetromino } from "../types";
+import { IBoard, IField, IRemovedRows, ITetromino } from "../types";
 import { Action } from "./Input";
 import React, { Dispatch, SetStateAction } from "react";
 import { IPos } from "../types";
 import { isBottom, isWithinBoard } from "./Board";
-import { isOnField, transferField } from "./Field";
+import { isOnField, removeLines, transferField } from "./Field";
 import { isTop } from "./Board";
 
 export const attemptMovement = (
@@ -15,6 +15,10 @@ export const attemptMovement = (
   field: IField,
   setField: React.Dispatch<React.SetStateAction<IField>>,
   stopGameOver: () => void,
+  startDelay: () => void,
+  stopDelay: () => void,
+  removedLines: IRemovedRows,
+  setRemovedLines: Dispatch<SetStateAction<IRemovedRows>>
 ) => {
   let direction: IPos = { x: 0, y: 0 };
   switch (action) {
@@ -28,10 +32,23 @@ export const attemptMovement = (
       direction = { x: 0, y: 1 };
       break;
     case Action.ArrowUp:
-      rotatePlayer(player, setPlayer, board);
+      rotatePlayer(player, setPlayer, board, field);
       break;
   }
-  movePlayer(player, setPlayer, addPlayer, board, direction, field, setField, stopGameOver);
+  movePlayer(
+    player,
+    setPlayer,
+    addPlayer,
+    board,
+    direction,
+    field,
+    setField,
+    stopGameOver,
+    startDelay,
+    stopDelay,
+    removedLines,
+    setRemovedLines
+  );
 };
 
 const movePlayer = (
@@ -41,8 +58,12 @@ const movePlayer = (
   board: IBoard,
   direction: IPos,
   field: IField,
-  setField: React.Dispatch<React.SetStateAction<IField>>,
+  setField: Dispatch<SetStateAction<IField>>,
   stopGameOver: () => void,
+  startDelay: () => void,
+  stopDelay: () => void,
+  removedLines: IRemovedRows,
+  setRemovedLines: Dispatch<SetStateAction<IRemovedRows>>
 ) => {
   const movedTetramino = {
     ...player[1],
@@ -52,39 +73,49 @@ const movePlayer = (
     },
   };
 
+  removeLines(
+    field,
+    setField,
+    startDelay,
+    stopDelay,
+    removedLines,
+    setRemovedLines,
+  );
   const isOnBottom = isBottom(board, movedTetramino);
 
   if (!isOnBottom) {
     transferField(player[1], field, setField);
     addPlayer();
-    return
+    return;
   }
 
   const isOnTop = isTop(field);
-  if(!isOnTop) {
-    console.log("stopGameOver")
-    stopGameOver(); 
-
+  if (!isOnTop) {
+    stopGameOver();
   }
   const isField = isOnField(field, movedTetramino);
-  if(!isField) {
-
-    if(direction.x !==0) return 
+  if (!isField) {
+    if (direction.x !== 0) return;
     transferField(player[1], field, setField);
     addPlayer();
-    return
+    return;
   }
 
   const isOnBoard = isWithinBoard(board, movedTetramino);
 
   if (isOnBoard) {
     player[1] = movedTetramino;
-    setPlayer([...player])
-    return
+    setPlayer([...player]);
+    return;
   }
 };
 
-const rotatePlayer = (player: ITetromino[], setPlayer: Dispatch<SetStateAction<ITetromino[]>>, board: IBoard) => {
+const rotatePlayer = (
+  player: ITetromino[],
+  setPlayer: Dispatch<SetStateAction<ITetromino[]>>,
+  board: IBoard,
+  field: IField
+) => {
   let len = player[1].matrix.length - 1;
   const rotatedMatrix = player[1].matrix.map((row, i) =>
     row.map((val, j) => player[1].matrix[len - j][i])
@@ -97,14 +128,19 @@ const rotatePlayer = (player: ITetromino[], setPlayer: Dispatch<SetStateAction<I
 
   const isOnBottom = isBottom(board, rotatedPlayer);
   if (!isOnBottom) {
-    return player;
+    return;
+  }
+
+  const isField = isOnField(field, rotatedPlayer);
+  if (!isField) {
+    setPlayer([...player]);
+    return;
   }
 
   const isOnBoard = isWithinBoard(board, rotatedPlayer);
-
   if (isOnBoard) {
     player[1] = rotatedPlayer;
-    setPlayer([...player])
+    setPlayer([...player]);
+    return;
   }
-
 };

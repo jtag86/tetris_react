@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { attemptMovement } from '../business/Controller';
 import { Action, typeOfAction } from '../business/Input';
 import { useInterval } from '../hooks/useInterval'
-import { IBoard, IField, ITetromino } from '../types'
+import { IBoard, IField, IRemovedRows, ITetromino } from '../types'
 
-const defaultDelay = 250;
 let action: Action | null = null;
 
 interface Props {
@@ -16,6 +15,9 @@ interface Props {
   field: IField,
   setField: React.Dispatch<React.SetStateAction<IField>>,
   stopGameOver: () => void,
+  delay: number | null,
+  startDelay: () => void,
+  stopDelay: () => void,
 }
 
 const Wrapper = styled.div`
@@ -39,14 +41,23 @@ const GameController: React.FC<Props> = ({
   field,
   setField,
   stopGameOver,
+  delay,
+  startDelay,
+  stopDelay,
 }) => {
 
   useInterval(() => {
-    handleInput(action = Action.ArrowDown)
-  }, defaultDelay)
+    if(!removedLines.handling) {
+      handleInput(action = Action.ArrowDown)
+    } else {
+      handleInput(action = null)
+    }
+  }, delay)
+
+  const [removedLines, setRemovedLines] = useState<IRemovedRows>({row: 0, cells: 0, handling: false});
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    handleInput(e.code as Action);
+    if(!removedLines.handling) handleInput(e.code as Action);
   }
 
   const handleInput = (action: Action | null) => {
@@ -59,6 +70,10 @@ const GameController: React.FC<Props> = ({
       field,
       setField,
       stopGameOver,
+      startDelay,
+      stopDelay,
+      removedLines,
+      setRemovedLines,
     )
   }
 
