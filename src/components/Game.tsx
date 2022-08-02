@@ -16,14 +16,19 @@ type Props = {
 };
 
 const Game: React.FC<Props> = ({ rows, columns }) => {
-  const [gameOver, setGameOver, restartGameOver] = useGameOver();
+  const [gameOver, startGameOver, stopGameOver] = useGameOver();
 
   return (
     <Wrapper>
-      {false ? (
-        <Menu handleClick={restartGameOver} />
+      {gameOver ? (
+        <Menu handleClick={startGameOver} />
       ) : (
-        <Tetris rows={rows} columns={columns} setGameOver={setGameOver} />
+        <Tetris
+          rows={rows}
+          columns={columns}
+          startGameOver={startGameOver}
+          stopGameOver={stopGameOver}
+        />
       )}
     </Wrapper>
   );

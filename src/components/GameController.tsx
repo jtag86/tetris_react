@@ -5,7 +5,7 @@ import { Action, typeOfAction } from '../business/Input';
 import { useInterval } from '../hooks/useInterval'
 import { IBoard, IField, ITetromino } from '../types'
 
-const defaultDelay = 2050;
+const defaultDelay = 250;
 let action: Action | null = null;
 
 interface Props {
@@ -15,6 +15,7 @@ interface Props {
   addPlayer: () => void,
   field: IField,
   setField: React.Dispatch<React.SetStateAction<IField>>,
+  stopGameOver: () => void,
 }
 
 const Wrapper = styled.div`
@@ -37,6 +38,7 @@ const GameController: React.FC<Props> = ({
   addPlayer,
   field,
   setField,
+  stopGameOver,
 }) => {
 
   useInterval(() => {
@@ -56,6 +58,7 @@ const GameController: React.FC<Props> = ({
       addPlayer,
       field,
       setField,
+      stopGameOver,
     )
   }
 

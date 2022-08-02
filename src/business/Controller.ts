@@ -4,6 +4,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { IPos } from "../types";
 import { isBottom, isWithinBoard } from "./Board";
 import { isOnField, transferField } from "./Field";
+import { isTop } from "./Board";
 
 export const attemptMovement = (
   action: Action | null,
@@ -12,7 +13,8 @@ export const attemptMovement = (
   setPlayer: React.Dispatch<React.SetStateAction<ITetromino[]>>,
   addPlayer: () => void,
   field: IField,
-  setField: React.Dispatch<React.SetStateAction<IField>>
+  setField: React.Dispatch<React.SetStateAction<IField>>,
+  stopGameOver: () => void,
 ) => {
   let direction: IPos = { x: 0, y: 0 };
   switch (action) {
@@ -29,7 +31,7 @@ export const attemptMovement = (
       rotatePlayer(player, setPlayer, board);
       break;
   }
-  movePlayer(player, setPlayer, addPlayer, board, direction, field, setField);
+  movePlayer(player, setPlayer, addPlayer, board, direction, field, setField, stopGameOver);
 };
 
 const movePlayer = (
@@ -39,7 +41,8 @@ const movePlayer = (
   board: IBoard,
   direction: IPos,
   field: IField,
-  setField: React.Dispatch<React.SetStateAction<IField>>
+  setField: React.Dispatch<React.SetStateAction<IField>>,
+  stopGameOver: () => void,
 ) => {
   const movedTetramino = {
     ...player[1],
@@ -57,7 +60,12 @@ const movePlayer = (
     return
   }
 
+  const isOnTop = isTop(field);
+  if(!isOnTop) {
+    console.log("stopGameOver")
+    stopGameOver(); 
 
+  }
   const isField = isOnField(field, movedTetramino);
   if(!isField) {
 

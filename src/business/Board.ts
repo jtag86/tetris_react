@@ -41,7 +41,7 @@ const transferBoard = (
       return (builtRows[y][x] = column);
     })
   );
- 
+
   const playerX = player[1].pos.x;
   const playerY = player[1].pos.y;
 
@@ -52,7 +52,7 @@ const transferBoard = (
     })
   );
 
- return builtRows;
+  return builtRows;
 };
 
 export const isBottom = (board: IBoard, nextPlayer: ITetromino) => {
@@ -63,6 +63,15 @@ export const isBottom = (board: IBoard, nextPlayer: ITetromino) => {
     row.every((column) => {
       if (column === 0) return true;
       return playerY + y <= lenY;
+    })
+  );
+};
+
+export const isTop = (field: IField) => {
+  return field.rows.every((row, y) =>
+    row.every((column) => {
+      if (column === 0) return true;
+      return y!==0
     })
   );
 };
