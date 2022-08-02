@@ -3,37 +3,37 @@ import styled from "styled-components";
 import { IDefaultCell } from "../types";
 
 interface Props {
-  cell: IDefaultCell;
+  cell: number;
 }
 
-const handleBackground = (cellStyle: string) => {
+const handleBackground = (cellStyle: number) => {
   switch (cellStyle) {
-    case "cyan":
+    case 1:
       return "cyan";
-    case "yellow":
+    case 2:
       return "yellow";
-    case "purple":
+    case 3:
       return "purple";
-    case "green":
+    case 4:
       return "green";
-    case "red":
+    case 5:
       return "red";
-    case "blue":
+    case 6:
       return "blue";
-    case "orange":
+    case 7:
       return "orange";
     default:
       return "CornflowerBlue";
   }
 };
 
-const Cell = styled.div<{ cellStyle: string }>`
+const StyledCell = styled.div<{ cellStyle: number}>`
   background-color: ${({ cellStyle }) => handleBackground(cellStyle)};
   border-radius: 5px;
 `;
 
-const BoardCell: React.FC<Props> = ({ cell }) => {
-  return <Cell cellStyle={cell.style} />;
+const Cell: React.FC<Props> = ({ cell }) => {
+  return <StyledCell cellStyle={cell} />;
 };
 
-export default BoardCell
+export default Cell

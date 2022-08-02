@@ -1,5 +1,5 @@
 export interface IDefaultCell {
-  style: string
+  style: number
 }
 
 export interface IPos {
@@ -13,12 +13,16 @@ interface ISize {
 }
 
 export interface IBoard {
-  rows: IDefaultCell[][],
+  rows:number[][],
   size: ISize
+}
+
+export interface IField {
+  rows: number[][],
+  size: ISize,
 }
 
 export interface ITetromino {
   matrix: number[][],
-  color: string,
   pos: IPos
 }

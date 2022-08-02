@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { attemptMovement } from '../business/Controller';
 import { Action, typeOfAction } from '../business/Input';
 import { useInterval } from '../hooks/useInterval'
-import { IBoard, ITetromino } from '../types'
+import { IBoard, IField, ITetromino } from '../types'
 
 const defaultDelay = 2050;
 let action: Action | null = null;
@@ -13,6 +13,8 @@ interface Props {
   player: ITetromino[],
   setPlayer: React.Dispatch<React.SetStateAction<ITetromino[]>>,
   addPlayer: () => void,
+  field: IField,
+  setField: React.Dispatch<React.SetStateAction<IField>>,
 }
 
 const Wrapper = styled.div`
@@ -33,6 +35,8 @@ const GameController: React.FC<Props> = ({
   player,
   setPlayer,
   addPlayer,
+  field,
+  setField,
 }) => {
 
   useInterval(() => {
@@ -49,6 +53,9 @@ const GameController: React.FC<Props> = ({
       board,
       player,
       setPlayer,
+      addPlayer,
+      field,
+      setField,
     )
   }
 

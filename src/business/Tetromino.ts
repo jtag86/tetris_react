@@ -8,37 +8,36 @@ const tetrominos = [
     [0, 0, 0, 0],
   ],
   [
-    [1, 0, 0],
-    [1, 1, 1],
+    [2, 0, 0],
+    [2, 2, 2],
     [0, 0, 0],
   ],
   [
-    [0, 0, 1],
-    [1, 1, 1],
+    [0, 0, 3],
+    [3, 3, 3],
     [0, 0, 0],
   ],
   [
-    [1, 1],
-    [1, 1],
+    [4, 4],
+    [4, 4],
   ],
   [
-    [0, 1, 1],
-    [1, 1, 0],
+    [0, 5, 5],
+    [5, 5, 0],
     [0, 0, 0],
   ],
   [
-    [1, 1, 0],
-    [0, 1, 1],
+    [6, 6, 0],
+    [0, 6, 6],
     [0, 0, 0],
   ],
   [
-    [0, 1, 0],
-    [1, 1, 1],
+    [0, 7, 0],
+    [7, 7, 7],
     [0, 0, 0],
   ],
 ];
 
-const color = ["cyan", "yellow", "purple", "green", "red", "blue", "orange"];
 
 export const buildTetramino = () => {
   const rand = Math.floor(Math.random() * 7);
@@ -46,12 +45,10 @@ export const buildTetramino = () => {
   const tetramino: ITetromino[] = [
     {
       matrix: tetrominos[rand],
-      color: color[rand],
       pos: { x: 0, y: 0 },
     },
     {
       matrix: tetrominos[rand2],
-      color: color[rand2],
       pos: { x: 0, y: 0 },
     },
   ];
@@ -60,9 +57,9 @@ export const buildTetramino = () => {
 
 export const buildNextTetramino = (tetromino: ITetromino[]) => {
   const rand = Math.floor(Math.random() * 7);
+  tetromino.pop();
   tetromino.unshift({
     matrix: tetrominos[rand],
-    color: color[rand],
     pos: { x: 0, y: 0 },
   });
   return tetromino;

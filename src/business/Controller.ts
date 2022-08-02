@@ -1,14 +1,18 @@
-import { IBoard, ITetromino } from "../types";
+import { IBoard, IField, ITetromino } from "../types";
 import { Action } from "./Input";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { IPos } from "../types";
-import { isWithinBoard } from "./Board";
+import { isBottom, isWithinBoard } from "./Board";
+import { isOnField, transferField } from "./Field";
 
 export const attemptMovement = (
   action: Action | null,
   board: IBoard,
   player: ITetromino[],
-  setPlayer: React.Dispatch<React.SetStateAction<ITetromino[]>>
+  setPlayer: React.Dispatch<React.SetStateAction<ITetromino[]>>,
+  addPlayer: () => void,
+  field: IField,
+  setField: React.Dispatch<React.SetStateAction<IField>>
 ) => {
   let direction: IPos = { x: 0, y: 0 };
   switch (action) {
@@ -22,14 +26,21 @@ export const attemptMovement = (
       direction = { x: 0, y: 1 };
       break;
     case Action.ArrowUp:
-      player[1] = rotatePlayer(player, board);
+      rotatePlayer(player, setPlayer, board);
       break;
   }
-  const [updatedPlayer] = movePlayer(player, board, direction);
-  setPlayer({ ...updatedPlayer });
+  movePlayer(player, setPlayer, addPlayer, board, direction, field, setField);
 };
 
-const movePlayer = (player: ITetromino[], board: IBoard, direction: IPos) => {
+const movePlayer = (
+  player: ITetromino[],
+  setPlayer: Dispatch<SetStateAction<ITetromino[]>>,
+  addPlayer: () => void,
+  board: IBoard,
+  direction: IPos,
+  field: IField,
+  setField: React.Dispatch<React.SetStateAction<IField>>
+) => {
   const movedTetramino = {
     ...player[1],
     pos: {
@@ -38,32 +49,54 @@ const movePlayer = (player: ITetromino[], board: IBoard, direction: IPos) => {
     },
   };
 
-  const isOnBoard = isWithinBoard(player, board, movedTetramino);
+  const isOnBottom = isBottom(board, movedTetramino);
+
+  if (!isOnBottom) {
+    transferField(player[1], field, setField);
+    addPlayer();
+    return
+  }
+
+
+  const isField = isOnField(field, movedTetramino);
+  if(!isField) {
+
+    if(direction.x !==0) return 
+    transferField(player[1], field, setField);
+    addPlayer();
+    return
+  }
+
+  const isOnBoard = isWithinBoard(board, movedTetramino);
 
   if (isOnBoard) {
     player[1] = movedTetramino;
+    setPlayer([...player])
+    return
   }
-  return [player] as const;
 };
 
-const rotatePlayer = (player: ITetromino[], board: IBoard) => {
-  const tetramino: ITetromino = JSON.parse(JSON.stringify(player[1]));
-  let len = tetramino.matrix.length - 1;
-  const rotatedMatrix = tetramino.matrix.map((row, i) =>
-    row.map((val, j) => tetramino.matrix[len - j][i])
+const rotatePlayer = (player: ITetromino[], setPlayer: Dispatch<SetStateAction<ITetromino[]>>, board: IBoard) => {
+  let len = player[1].matrix.length - 1;
+  const rotatedMatrix = player[1].matrix.map((row, i) =>
+    row.map((val, j) => player[1].matrix[len - j][i])
   );
 
-  const rotatedTetramino = {
+  const rotatedPlayer = {
     ...player[1],
     matrix: rotatedMatrix,
   };
 
-  const isOnBoard = isWithinBoard(player, board, rotatedTetramino);
-
-  console.log(isOnBoard);
-  if (isOnBoard) {
-    player[1] = rotatedTetramino;
+  const isOnBottom = isBottom(board, rotatedPlayer);
+  if (!isOnBottom) {
+    return player;
   }
 
-  return player[1];
+  const isOnBoard = isWithinBoard(board, rotatedPlayer);
+
+  if (isOnBoard) {
+    player[1] = rotatedPlayer;
+    setPlayer([...player])
+  }
+
 };

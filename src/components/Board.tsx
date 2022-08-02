@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { IBoard, IDefaultCell } from "../types";
-import BoardCell from "./BoardCell";
+import Cell from "./Cell";
 
 const Wrapper = styled.div<{ rows: number; columns: number }>`
   margin: auto;
@@ -24,7 +24,7 @@ const Board: React.FC<Props> = ({ board }) => {
   return (
     <Wrapper rows={board.size.rows} columns={board.size.columns}>
       {board.rows.map((row) =>
-        row.map((cell, x) => <BoardCell key={x} cell={cell} />)
+        row.map((cell, x) => <Cell key={x} cell={cell} />)
       )}
     </Wrapper>
   );

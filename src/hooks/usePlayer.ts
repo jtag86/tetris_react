@@ -5,9 +5,8 @@ import { buildNextTetramino } from '../business/Tetromino';
 
 const usePlayer = () => {
   const [player, setPlayer] = useState<ITetromino[]>(buildTetramino());
-
   const addPlayer = useCallback(() => {
-    setPlayer(buildNextTetramino(player));
+    setPlayer(prevPlayer => buildNextTetramino(player));
   }, []);
 
   return [player, setPlayer, addPlayer] as const;

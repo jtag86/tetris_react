@@ -1,12 +1,8 @@
-import { IBoard, IDefaultCell, IPos, ITetromino } from "../types";
-
-const defaultCell: IDefaultCell = {
-  style: "",
-};
+import { IBoard, IDefaultCell, IField, IPos, ITetromino } from "../types";
 
 export const buildBoard = (rows: number, columns: number) => {
   const builtRows = Array.from({ length: rows }, () =>
-    Array.from({ length: columns }, () => ({ ...defaultCell }))
+    Array.from({ length: columns }, () => 0)
   );
 
   const obj: IBoard = {
@@ -20,13 +16,14 @@ export const buildBoard = (rows: number, columns: number) => {
 export const nextBoard = (
   rows: number,
   columns: number,
-  player: ITetromino[]
+  player: ITetromino[],
+  field: IField
 ) => {
   let builtRows = Array.from({ length: rows }, () =>
-    Array.from({ length: columns }, () => ({ ...defaultCell }))
+    Array.from({ length: columns }, () => 0)
   );
 
-  builtRows = transferBoard(player, builtRows);
+  builtRows = transferBoard(player, builtRows, field);
 
   return {
     rows: builtRows,
@@ -34,35 +31,49 @@ export const nextBoard = (
   };
 };
 
-const transferBoard = (player: ITetromino[], builtRows: IDefaultCell[][]) => {
+const transferBoard = (
+  player: ITetromino[],
+  builtRows: number[][],
+  field: IField
+) => {
+  field.rows.map((row, y) =>
+    row.map((column, x) => {
+      return (builtRows[y][x] = column);
+    })
+  );
+ 
   const playerX = player[1].pos.x;
   const playerY = player[1].pos.y;
 
   player[1].matrix.map((row, y) =>
     row.map((column, x) => {
-      if(column !== 1) return
-      let style: string;
-      column === 1 ? (style = player[1].color) : (style = "green");
-      return (builtRows[playerY + y][playerX + x] = { style });
+      if (column === 0) return true;
+      return (builtRows[playerY + y][playerX + x] = column);
     })
   );
-  return builtRows;
+
+ return builtRows;
 };
 
-export const isWithinBoard = (
-  player: ITetromino[],
-  board: IBoard,
-  nextPlayer: ITetromino
-) => {
-  
-  const playerX = nextPlayer.pos.x;
+export const isBottom = (board: IBoard, nextPlayer: ITetromino) => {
   const playerY = nextPlayer.pos.y;
-  const lenY = board.rows.length;
-  const lenX = board.rows[0].length;
+  const lenY = board.rows.length - 1;
 
   return nextPlayer.matrix.every((row, y) =>
+    row.every((column) => {
+      if (column === 0) return true;
+      return playerY + y <= lenY;
+    })
+  );
+};
+
+export const isWithinBoard = (board: IBoard, nextPlayer: ITetromino) => {
+  const playerX = nextPlayer.pos.x;
+  const lenX = board.rows[0].length;
+
+  return nextPlayer.matrix.every((row) =>
     row.every((column, x) => {
-      if (column !== 1) return true;
+      if (column === 0) return true;
       return playerX + x >= 0 && playerX + x < lenX;
     })
   );

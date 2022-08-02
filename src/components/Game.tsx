@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useGameOver } from "../hooks/GameOver";
+import { useGameOver } from "../hooks/useGameOver";
 import Menu from "./Menu";
 import Tetris from "./Tetris";
 
