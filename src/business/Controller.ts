@@ -1,9 +1,9 @@
-import { IBoard, IField, IRemovedRows, ITetromino } from "../types";
+import { IBoard, IField, ITetromino } from "../types";
 import { Action } from "./Input";
 import React, { Dispatch, SetStateAction } from "react";
 import { IPos } from "../types";
 import { isBottom, isWithinBoard } from "./Board";
-import { isOnField, removeLines, transferField } from "./Field";
+import { isOnField, transferField } from "./Field";
 import { isTop } from "./Board";
 
 export const attemptMovement = (
@@ -15,10 +15,6 @@ export const attemptMovement = (
   field: IField,
   setField: React.Dispatch<React.SetStateAction<IField>>,
   stopGameOver: () => void,
-  startDelay: () => void,
-  stopDelay: () => void,
-  removedLines: IRemovedRows,
-  setRemovedLines: Dispatch<SetStateAction<IRemovedRows>>
 ) => {
   let direction: IPos = { x: 0, y: 0 };
   switch (action) {
@@ -44,10 +40,6 @@ export const attemptMovement = (
     field,
     setField,
     stopGameOver,
-    startDelay,
-    stopDelay,
-    removedLines,
-    setRemovedLines
   );
 };
 
@@ -60,10 +52,6 @@ const movePlayer = (
   field: IField,
   setField: Dispatch<SetStateAction<IField>>,
   stopGameOver: () => void,
-  startDelay: () => void,
-  stopDelay: () => void,
-  removedLines: IRemovedRows,
-  setRemovedLines: Dispatch<SetStateAction<IRemovedRows>>
 ) => {
   const movedTetramino = {
     ...player[1],
@@ -73,18 +61,11 @@ const movePlayer = (
     },
   };
 
-  removeLines(
-    field,
-    setField,
-    startDelay,
-    stopDelay,
-    removedLines,
-    setRemovedLines,
-  );
   const isOnBottom = isBottom(board, movedTetramino);
 
   if (!isOnBottom) {
-    transferField(player[1], field, setField);
+    const newField = transferField(player[1], field);
+    setField(newField);
     addPlayer();
     return;
   }
@@ -96,7 +77,8 @@ const movePlayer = (
   const isField = isOnField(field, movedTetramino);
   if (!isField) {
     if (direction.x !== 0) return;
-    transferField(player[1], field, setField);
+    const newField = transferField(player[1], field);
+    setField(newField);
     addPlayer();
     return;
   }

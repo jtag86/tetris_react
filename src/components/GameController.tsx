@@ -42,22 +42,14 @@ const GameController: React.FC<Props> = ({
   setField,
   stopGameOver,
   delay,
-  startDelay,
-  stopDelay,
 }) => {
 
   useInterval(() => {
-    if(!removedLines.handling) {
       handleInput(action = Action.ArrowDown)
-    } else {
-      handleInput(action = null)
-    }
   }, delay)
 
-  const [removedLines, setRemovedLines] = useState<IRemovedRows>({row: 0, cells: 0, handling: false});
-
   const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    if(!removedLines.handling) handleInput(e.code as Action);
+    handleInput(e.code as Action);
   }
 
   const handleInput = (action: Action | null) => {
@@ -70,10 +62,6 @@ const GameController: React.FC<Props> = ({
       field,
       setField,
       stopGameOver,
-      startDelay,
-      stopDelay,
-      removedLines,
-      setRemovedLines,
     )
   }
 

@@ -29,60 +29,38 @@ export const isOnField = (field: IField, nextPlayer: ITetromino) => {
 export const transferField = (
   player: ITetromino,
   field: IField,
-  setField: Dispatch<SetStateAction<IField>>
 ) => {
   const playerX = player.pos.x;
   const playerY = player.pos.y;
+  const rows = JSON.parse(JSON.stringify(field.rows));
 
   player.matrix.map((row, y) =>
     row.map((column, x) => {
       if (column === 0) return true;
-      field.rows[playerY + y][playerX + x] = column;
+      rows[playerY + y][playerX + x] = column;
     })
   );
+  const newField = {
+    ...field,
+    rows: rows,
+  }
+  return removeRows(newField);
 };
 
-export const removeLines = (
+export const removeRows = (
   field: IField,
-  setField: Dispatch<SetStateAction<IField>>,
-  startDelay: () => void,
-  stopDelay: () => void,
-  removedLines: IRemovedRows,
-  setRemovedLines: Dispatch<SetStateAction<IRemovedRows>>,
 ) => {
 
-  let rows= field.rows.map((row, y) => {
+  field.rows = field.rows.filter((row, y) => {
+    const currentRow = row.every((column) => column)
+    return !currentRow
+  })
 
-    const temp = row.every((column, x) => {
-      return column !==0      
-    })
-    return temp ? y : -1
-  }) 
-
-  rows = rows.filter(item => item >= 0)
-
-  if(!removedLines.handling && rows.length){
-    const newRemovedLines = {
-      ...removedLines,
-      row: rows[0],
-      cells: field.size.columns-1,
-      handling: true,
-    }
-    
-    setRemovedLines({...newRemovedLines})
-  } 
-  if(removedLines.handling) {
-    const row = removedLines.row;
-    const column = removedLines.cells;
-     
-    field.rows[row][column] = 0;
-    if(removedLines.cells >=0) {
-      removedLines.cells--;
-    } else {
-      removedLines.handling = false;
-    }
-
-    setRemovedLines({...removedLines})
+  let rowsNum = field.size.rows - field.rows.length;
+  while(rowsNum--) {
+    field.rows.unshift(Array.from({length: field.size.columns}, () => 0))
+    console.log("hi")
   }
-  setField({...field})
+  console.log("rowsNum", rowsNum)
+  return field  
 }
