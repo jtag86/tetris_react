@@ -20,7 +20,7 @@ const Game: React.FC<Props> = ({ rows, columns }) => {
 
   return (
     <Wrapper>
-      {false? (
+      {gameOver? (
         <Menu handleClick={startGameOver} />
       ) : (
         <Tetris

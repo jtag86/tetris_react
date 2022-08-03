@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
-import { buildTetramino } from "../business/Tetromino";
+import { buildTetramino } from "../logic/Tetromino";
 import { ITetromino } from "../types";
-import { buildNextTetramino } from '../business/Tetromino';
+import { buildNextTetramino } from '../logic/Tetromino';
 
 const usePlayer = () => {
   const [player, setPlayer] = useState<ITetromino[]>(buildTetramino());

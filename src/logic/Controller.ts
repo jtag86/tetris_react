@@ -6,15 +6,17 @@ import { isBottom, isWithinBoard } from "./Board";
 import { isOnField, transferField } from "./Field";
 import { isTop } from "./Board";
 
+
 export const attemptMovement = (
   action: Action | null,
   board: IBoard,
   player: ITetromino[],
-  setPlayer: React.Dispatch<React.SetStateAction<ITetromino[]>>,
+  setPlayer: Dispatch<SetStateAction<ITetromino[]>>,
   addPlayer: () => void,
   field: IField,
-  setField: React.Dispatch<React.SetStateAction<IField>>,
+  setField: Dispatch<SetStateAction<IField>>,
   stopGameOver: () => void,
+  setCleanedRows: Dispatch<SetStateAction<number>>,
 ) => {
   let direction: IPos = { x: 0, y: 0 };
   switch (action) {
@@ -40,6 +42,7 @@ export const attemptMovement = (
     field,
     setField,
     stopGameOver,
+    setCleanedRows,
   );
 };
 
@@ -52,6 +55,7 @@ const movePlayer = (
   field: IField,
   setField: Dispatch<SetStateAction<IField>>,
   stopGameOver: () => void,
+  setCleanedRows: Dispatch<SetStateAction<number>>,
 ) => {
   const movedTetramino = {
     ...player[1],
@@ -64,7 +68,7 @@ const movePlayer = (
   const isOnBottom = isBottom(board, movedTetramino);
 
   if (!isOnBottom) {
-    const newField = transferField(player[1], field);
+    const newField = transferField(player[1], field, setCleanedRows);
     setField(newField);
     addPlayer();
     return;
@@ -77,7 +81,7 @@ const movePlayer = (
   const isField = isOnField(field, movedTetramino);
   if (!isField) {
     if (direction.x !== 0) return;
-    const newField = transferField(player[1], field);
+    const newField = transferField(player[1], field, setCleanedRows);
     setField(newField);
     addPlayer();
     return;

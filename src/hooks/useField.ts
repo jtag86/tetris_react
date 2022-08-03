@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { buildField } from '../business/Field';
+import { buildField } from '../logic/Field';
 import { IField } from '../types';
 
 const useField = (rows: number, columns: number) => {

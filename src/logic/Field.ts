@@ -1,5 +1,11 @@
+import { warn } from "console";
 import { Dispatch, SetStateAction, useState } from "react";
 import { IField, IRemovedRows, ITetromino } from "../types";
+import cleanRowSound from '../assets/sound/cleanRow.wav'
+import hitTetraminoSound from '../assets/sound/hitTetramino.wav';
+
+const cleanRow = new Audio(cleanRowSound);
+const hitTetramino = new Audio(hitTetraminoSound);
 
 export const buildField = (rows: number, columns: number) => {
   const builtRows = Array.from({ length: rows }, () =>
@@ -29,6 +35,7 @@ export const isOnField = (field: IField, nextPlayer: ITetromino) => {
 export const transferField = (
   player: ITetromino,
   field: IField,
+  setCleanedRows: Dispatch<SetStateAction<number>>,
 ) => {
   const playerX = player.pos.x;
   const playerY = player.pos.y;
@@ -44,23 +51,27 @@ export const transferField = (
     ...field,
     rows: rows,
   }
-  return removeRows(newField);
+  return removeRows(newField, setCleanedRows);
 };
 
 export const removeRows = (
   field: IField,
+  setCleanedRows: Dispatch<SetStateAction<number>>,
 ) => {
-
-  field.rows = field.rows.filter((row, y) => {
+  
+  field.rows = field.rows.filter((row) => {
     const currentRow = row.every((column) => column)
     return !currentRow
   })
 
   let rowsNum = field.size.rows - field.rows.length;
-  while(rowsNum--) {
+  rowsNum ? cleanRow.play() : hitTetramino.play() 
+
+  const tempRowsNum = rowsNum;
+  setCleanedRows(prevRows => prevRows+tempRowsNum)
+  while(rowsNum) {
+    rowsNum--
     field.rows.unshift(Array.from({length: field.size.columns}, () => 0))
-    console.log("hi")
   }
-  console.log("rowsNum", rowsNum)
   return field  
 }

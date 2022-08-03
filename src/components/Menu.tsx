@@ -6,13 +6,14 @@ const Button = styled.div`
   font-size: 3rem;
   border-radius: 20px;
   border: none;
-  background-color: purple;
+  background-color: #347B98;
   cursor: pointer;
   max-width: 300px;
   text-align: center;
   margin: 10rem auto;
   box-shadow: 0px 0px 10px 10px rgba( 0, 0, 0, 0.5);
   color: white;
+  line-height: 1.5;
 `
 
 type Props = {

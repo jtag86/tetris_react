@@ -13,23 +13,23 @@ const handleBackground = (cellStyle: number) => {
     case 2:
       return "yellow";
     case 3:
-      return "purple";
+      return "Orchid";
     case 4:
-      return "green";
+      return "Lime";
     case 5:
       return "red";
     case 6:
-      return "blue";
+      return "NavajoWhite";
     case 7:
       return "orange";
     default:
-      return "CornflowerBlue";
+      return "#347B98";
   }
 };
 
 const StyledCell = styled.div<{ cellStyle: number}>`
   background-color: ${({ cellStyle }) => handleBackground(cellStyle)};
-  border-radius: 5px;
+  border-radius: 4px;
 `;
 
 const Cell: React.FC<Props> = ({ cell }) => {

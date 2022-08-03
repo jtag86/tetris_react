@@ -4,12 +4,10 @@ import Cell from "./Cell";
 
 const Wrapper = styled.div<{ rows: number; columns: number }>`
   margin: auto;
-  width: ${({columns}) => columns * 30}px;
-  height: ${({rows}) => rows * 30}px;
-  background-color: rgb(32, 0, 64);
-  border: 10px solid rgb(32, 0, 64);
-  border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  width: ${({columns}) => columns * 23}px;
+  height: ${({rows}) => rows * 23}px;
+  border: 5px solid black;
+  border-radius: 3px;
   display: grid;
   grid-gap: 2px;
   grid-template-rows: repeat(${({ rows }) => rows}, 1fr);
